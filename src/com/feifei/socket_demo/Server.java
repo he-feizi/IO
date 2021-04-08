@@ -14,6 +14,7 @@ public class Server {
 
     public static void main(String[] args) {
         final int DEFAULT_PORT = 8888;
+        final String QUIT = "quit";
         ServerSocket serverSocket = null;
 
         try {
@@ -33,13 +34,19 @@ public class Server {
                 );
 
                 // 读取客户端发送的消息
-                String msg = reader.readLine();
-                if (msg != null) {
+                String msg = null;
+                while ((msg = reader.readLine()) != null) {
                     System.out.println("客户端【" + socket.getPort() + "】：" + msg);
 
                     // 回复客户端发送的消息
                     writer.write("服务器：" + msg + "\n");
                     writer.flush();
+
+                    // 查看客户端是否退出
+                    if (QUIT.equals(msg)) {
+                        System.out.println("客户端【" + socket.getPort() + "】：断开连接");
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
