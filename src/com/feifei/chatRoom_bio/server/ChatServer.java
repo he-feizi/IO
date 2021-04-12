@@ -5,6 +5,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * @ClassName ChatServer
@@ -17,10 +19,12 @@ public class ChatServer {
     private final int DEFAULT_PORT = 8888;
     private final String QUIT = "quit";
 
+    private ExecutorService executorService;
     private ServerSocket serverSocket;
     private Map<Integer, Writer> connectedClients;
 
     public ChatServer() {
+        executorService = Executors.newFixedThreadPool(10);
         connectedClients = new HashMap<>();
     }
 
@@ -80,7 +84,8 @@ public class ChatServer {
                 // 等待客户端连接
                 Socket socket = serverSocket.accept();
                 // 创建ChatHandler线程
-                new Thread(new ChatHandler(this, socket)).start();
+                // new Thread(new ChatHandler(this, socket)).start();
+                executorService.execute(new ChatHandler(this, socket));
             }
         } catch (IOException e) {
             e.printStackTrace();
