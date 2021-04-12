@@ -1,4 +1,4 @@
-package com.feifei.socket_demo;
+package com.feifei.socketDemo;
 
 import java.io.*;
 import java.net.ServerSocket;
